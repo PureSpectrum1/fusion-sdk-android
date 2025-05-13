@@ -1,23 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parentLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp">
+    android:orientation="vertical">
 
-    <Button
-        android:id="@+id/callButton"
-        android:text="Call API"
-        android:layout_width="wrap_content"
+    <!-- Horizontal scroll container -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal" />
+        android:fillViewport="true"
+        android:scrollbars="none">
 
-    <TextView
-        android:id="@+id/textView"
-        android:text="Result will appear here"
-        android:textSize="18sp"
-        android:paddingTop="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal" />
+        <!-- LinearLayout that holds cards side by side -->
+        <LinearLayout
+            android:id="@+id/cardContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp" />
+    </HorizontalScrollView>
+
+    <!-- WebView to show survey on card click -->
+    <WebView
+        android:id="@+id/webView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:visibility="gone" />
 </LinearLayout>
