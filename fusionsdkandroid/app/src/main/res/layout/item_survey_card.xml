@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fusion_card_view_root" 
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="4dp"
+    app:cardCornerRadius="12dp" 
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:id="@+id/card_content_layout" 
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:gravity="center_horizontal">
+
+        <!-- CPI Amount and Currency -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/coinsText" 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="340"
+                android:textSize="34sp" 
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/currencyText" 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Coins"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <!-- LOI Icon and Text -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+
+            <ImageView
+                android:id="@+id/clockIcon" 
+                android:layout_width="18dp" 
+                android:layout_height="18dp"
+                android:src="@android:drawable/ic_menu_recent_history" 
+                app:tint="?android:attr/textColorSecondary" 
+                android:layout_marginEnd="4dp"/>
+
+            <TextView
+                android:id="@+id/minutesText" 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="2 Min"
+                android:textSize="18sp" 
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <!-- Rating Stars - Using RatingBar for better control -->
+        <RatingBar
+            android:id="@+id/survey_rating_bar" 
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:stepSize="0.1" 
+            android:isIndicator="true"
+            tools:rating="4.5" />
+
+        <LinearLayout
+            android:id="@+id/starContainer" 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone" 
+            tools:visibility="visible">
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
+

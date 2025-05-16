@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">fusionsdkandroid</string>
+
+    <!-- Fusion SDK Strings -->
+    <string name="fusion_sdk_cpi_currency_default">Points</string> <!-- Example currency, user might want to configure this -->
+    <string name="fusion_sdk_loi_minutes_format">%d Min</string>
+    <string name="fusion_sdk_survey_title_default">Survey</string>
+    <string name="fusion_sdk_no_surveys_message">No surveys available at the moment.</string>
+
+</resources>
