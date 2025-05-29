@@ -13,6 +13,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.IOException
+import retrofit2.HttpException
 
 object FusionSdk {
     private var recyclerView: RecyclerView? = null
@@ -28,7 +30,8 @@ object FusionSdk {
         locale: String,
         memberId: String? = null,
         hashedId: String? = null,
-        profileData: Map<String, String> = emptyMap()
+        profileData: Map<String, String> = emptyMap(),
+        onError: ((FusionError) -> Unit)? = null
     ) {
         val apiService = ApiClient.create(baseUrl)
 
@@ -91,7 +94,7 @@ object FusionSdk {
                 e.printStackTrace()
                 withContext(Dispatchers.Main) {
                     surveyAdapter?.submitList(emptyList())
-                    println("FusionSDK Error: Failed to fetch surveys - ${e.localizedMessage}")
+                    onError?.invoke(mapExceptionToFusionError(e))
                 }
             }
         }
@@ -110,6 +113,26 @@ object FusionSdk {
         recyclerView = null
         surveyAdapter = null
         println("FusionSDK: Shutdown (cleared internal references).")
+    }
+
+    private fun mapExceptionToFusionError(e: Exception): FusionError {
+        return when (e) {
+            is IOException -> FusionError.NetworkError(e.message ?: "Network error")
+            is HttpException -> {
+                when (e.code()) {
+                    in 400..499 -> {
+                        if (e.code() == 401 || e.code() == 403) {
+                            FusionError.AuthenticationError(e.message ?: "Authentication failed")
+                        } else {
+                            FusionError.ClientError(e.code(), e.message ?: "Client error")
+                        }
+                    }
+                    in 500..599 -> FusionError.ServerError(e.code(), e.message ?: "Server error")
+                    else -> FusionError.UnknownError(e.message ?: "Unknown error")
+                }
+            }
+            else -> FusionError.UnknownError(e.message ?: "Unknown error")
+        }
     }
 }
 

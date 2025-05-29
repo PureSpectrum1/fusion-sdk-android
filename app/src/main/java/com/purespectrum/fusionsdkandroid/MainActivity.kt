@@ -44,9 +44,8 @@ class MainActivity : AppCompatActivity() {
             context = this,
             targetView = cardContainer,
             config = customCardConfig,
-            baseUrl = "http://www.company.com:81/a/b/c.html", // Example url
-            accessToken = "d7yXBaH9jVtyxS6iYQd3bVmYGpOvbIkWxuwjMqY2PGBObOVGqbm1GLsqHGuoVBw7", // Example token
-            respondentId = "user", // Example id
+            accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbXAiOjE3MSwiaWF0IjoxNjc3MTg0NTc5fQ.lw29VbgcAKA8WPmh1fWfcyTjmeHeOgUT8erIm3KkcdQ", // Example token
+            respondentId = "vini", // Example id
             locale = "en_US" // Example locale
         )
     }

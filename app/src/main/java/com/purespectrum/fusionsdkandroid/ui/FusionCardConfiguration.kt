@@ -35,7 +35,13 @@ data class FusionCardConfiguration(
     // WebView Activity Toolbar styles
     val webViewToolbarColor: Int,
     val webViewToolbarTitleColor: Int,
-    val webViewToolbarTitle: String? // Optional title for webview
+    val webViewToolbarTitle: String?, // Optional title for webview
+
+    // Empty state styles
+    val emptyStateMessage: String,
+    val emptyStateMessageColor: Int,
+    val emptyStateMessageFontSizeSp: Float,
+    val showEmptyState: Boolean
 ) {
     class Builder {
         private var cardBackgroundColor: Int = Color.WHITE
@@ -62,6 +68,12 @@ data class FusionCardConfiguration(
         private var webViewToolbarTitleColor: Int = Color.WHITE
         private var webViewToolbarTitle: String? = null // Default is app name or "Survey"
 
+        // Empty state defaults
+        private var emptyStateMessage: String = "No surveys available"
+        private var emptyStateMessageColor: Int = Color.GRAY
+        private var emptyStateMessageFontSizeSp: Float = 16f
+        private var showEmptyState: Boolean = true
+
         fun cardBackgroundColor(color: Int) = apply { this.cardBackgroundColor = color }
         fun cardCornerRadiusDp(radius: Float) = apply { this.cardCornerRadiusDp = radius }
         fun cardElevationDp(elevation: Float) = apply { this.cardElevationDp = elevation }
@@ -85,6 +97,12 @@ data class FusionCardConfiguration(
         fun webViewToolbarColor(color: Int) = apply { this.webViewToolbarColor = color }
         fun webViewToolbarTitleColor(color: Int) = apply { this.webViewToolbarTitleColor = color }
         fun webViewToolbarTitle(title: String?) = apply { this.webViewToolbarTitle = title }
+
+        // Empty state builder methods
+        fun emptyStateMessage(message: String) = apply { this.emptyStateMessage = message }
+        fun emptyStateMessageColor(color: Int) = apply { this.emptyStateMessageColor = color }
+        fun emptyStateMessageFontSizeSp(size: Float) = apply { this.emptyStateMessageFontSizeSp = size }
+        fun showEmptyState(show: Boolean) = apply { this.showEmptyState = show }
 
         fun accentColor(color: Int) = apply {
             this.cpiAmountColor = color
@@ -115,7 +133,11 @@ data class FusionCardConfiguration(
             loiIconColor = loiIconColor,
             webViewToolbarColor = webViewToolbarColor,
             webViewToolbarTitleColor = webViewToolbarTitleColor,
-            webViewToolbarTitle = webViewToolbarTitle
+            webViewToolbarTitle = webViewToolbarTitle,
+            emptyStateMessage = emptyStateMessage,
+            emptyStateMessageColor = emptyStateMessageColor,
+            emptyStateMessageFontSizeSp = emptyStateMessageFontSizeSp,
+            showEmptyState = showEmptyState
         )
     }
 }

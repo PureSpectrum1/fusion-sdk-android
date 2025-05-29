@@ -16,6 +16,11 @@ This SDK is owned by [PureSpectrum](https://www.purespectrum.com/).
     - [Customizing Card Appearance](#customizing-card-appearance)
     - [Hiding Survey Cards](#hiding-survey-cards)
     - [SDK Shutdown](#sdk-shutdown)
+- [Error Handling](#error-handling)
+    - [Error Callback](#error-callback)
+    - [Error Types](#error-types-fusionerror)
+    - [Empty State Handling](#empty-state-handling)
+    - [Logging](#logging)
 - [WebView Customization](#webview-customization)
 - [Support](#support)
 
@@ -141,9 +146,8 @@ private fun loadSurveys() {
         context = this,
         targetView = cardContainer,
         config = customCardConfig,
-        baseUrl = "http://www.company.com:81/a/b/c.html", // Example url
-        accessToken = "d7yXBaH9jVtyxS6iYQd3bVmYGpOvbIkWxuwjMqY2PGBObOVGqbm1GLsqHGuoVBw7", // Example token
-        respondentId = "user", // Example id
+        accessToken = "your_token", // Example token
+        respondentId = "your_id", // Example id
         locale = "en_US" // Example locale
         // Optional: memberId, hashedId, profileData can also be passed
     )
@@ -208,6 +212,102 @@ The `SurveyWebViewActivity` used to display surveys supports toolbar customizati
 *   `webViewToolbarTitle`: Sets a custom title for the WebView screen.
 
 These are configured through the `FusionCardConfiguration.Builder()` as shown in the usage example.
+
+## Error Handling
+
+The Fusion SDK provides comprehensive error handling to help you manage various scenarios that may occur during survey loading and display.
+
+### Error Callback
+
+Pass a lambda function to the `onError` parameter when calling `showSurveyCards()`:
+
+```kotlin
+FusionSdk.showSurveyCards(
+    context = this,
+    targetView = cardContainer,
+    config = customCardConfig,
+    baseUrl = "YOUR_BASE_API_URL",
+    accessToken = "YOUR_ACCESS_TOKEN",
+    respondentId = "USER_RESPONDENT_ID",
+    locale = "en_US",
+    onError = { error ->
+        // Handle the error based on its type
+        when (error) {
+            is FusionError.NetworkError -> {
+                Log.e("FusionSDK", "Network Error: ${error.message}")
+                // Show a network error message to the user
+                Toast.makeText(this, "Network error: Check your connection", Toast.LENGTH_SHORT).show()
+            }
+            is FusionError.AuthenticationError -> {
+                Log.e("FusionSDK", "Authentication Error: ${error.message}")
+                // Handle authentication failure (e.g., prompt for login)
+                Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show()
+            }
+            is FusionError.ServerError -> {
+                Log.e("FusionSDK", "Server Error (${error.code}): ${error.message}")
+                // Show a generic server error message
+                Toast.makeText(this, "Server error, please try again later", Toast.LENGTH_SHORT).show()
+            }
+            is FusionError.ClientError -> {
+                Log.e("FusionSDK", "Client Error (${error.code}): ${error.message}")
+                // Handle specific client errors if needed
+                Toast.makeText(this, "Request error: ${error.code}", Toast.LENGTH_SHORT).show()
+            }
+            is FusionError.NoSurveysAvailable -> {
+                Log.i("FusionSDK", "No surveys available: ${error.message}")
+                // This is handled automatically if showEmptyState is true
+                // You can add additional UI feedback here if needed
+            }
+            is FusionError.UnknownError -> {
+                Log.e("FusionSDK", "Unknown Error: ${error.message}")
+                // Show a generic error message
+                Toast.makeText(this, "An unexpected error occurred", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+)
+```
+
+### Error Types (`FusionError`)
+
+The `onError` callback receives a `FusionError` object, which is a sealed class representing different error categories:
+
+- `FusionError.NetworkError`: Indicates connectivity issues (e.g., no internet).
+- `FusionError.AuthenticationError`: Problems with the access token or authentication (HTTP 401, 403).
+- `FusionError.ServerError`: Server-side issues (HTTP 5xx responses).
+- `FusionError.ClientError`: Client-side request issues (HTTP 4xx responses, excluding 401/403).
+- `FusionError.NoSurveysAvailable`: The API call was successful, but no surveys matched the criteria.
+- `FusionError.UnknownError`: Any other unexpected errors, including unhandled HTTP status codes or parsing issues.
+
+### Empty State Handling
+
+The SDK provides built-in support for displaying a customizable message when no surveys are available. This is controlled through the `FusionCardConfiguration`:
+
+```kotlin
+FusionCardConfiguration.Builder()
+    // ... other configuration ...
+    .showEmptyState(true) // Enable empty state display (default is true)
+    .emptyStateMessage("No surveys available right now. Check back later!") // Custom message
+    .emptyStateMessageColor(Color.GRAY) // Text color
+    .emptyStateMessageFontSizeSp(16f) // Text size
+    .build()
+```
+
+When `showEmptyState` is enabled (which is the default), the SDK will automatically display the empty state message in place of the survey cards when:
+- No surveys are returned from the API
+- An error occurs during survey fetching
+
+This provides a better user experience than simply showing nothing or requiring manual handling of the empty state.
+
+### Logging
+
+The SDK logs important events and errors using the Android `Log` class with the tag `FusionSDK`. You can filter for this tag in Logcat during development and debugging:
+
+```
+adb logcat FusionSDK:D *:S
+```
+
+This will show only logs from the Fusion SDK at the Debug level or higher.
 
 ## Support
 

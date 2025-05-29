@@ -22,22 +22,68 @@ class FusionSurveyAdapter(
     private val context: Context,
     private var config: FusionCardConfiguration,
     private val onItemClick: (Survey) -> Unit
-) : ListAdapter<Survey, FusionSurveyAdapter.SurveyViewHolder>(SurveyDiffCallback()) {
+) : ListAdapter<Survey, RecyclerView.ViewHolder>(SurveyDiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SurveyViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_survey_card, parent, false)
-        return SurveyViewHolder(view, config, onItemClick)
+    companion object {
+        private const val VIEW_TYPE_EMPTY = 0
+        private const val VIEW_TYPE_SURVEY = 1
     }
 
-    override fun onBindViewHolder(holder: SurveyViewHolder, position: Int) {
-        holder.bind(getItem(position))
+    override fun getItemViewType(position: Int): Int {
+        return if (currentList.isEmpty() && config.showEmptyState) {
+            VIEW_TYPE_EMPTY
+        } else {
+            VIEW_TYPE_SURVEY
+        }
+    }
+
+    override fun getItemCount(): Int {
+        return if (currentList.isEmpty() && config.showEmptyState) 1 else currentList.size
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            VIEW_TYPE_EMPTY -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.empty_state_view, parent, false)
+                EmptyStateViewHolder(view, config)
+            }
+            else -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_survey_card, parent, false)
+                SurveyViewHolder(view, config, onItemClick)
+            }
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder) {
+            is SurveyViewHolder -> {
+                if (currentList.isNotEmpty()) {
+                    holder.bind(getItem(position))
+                }
+            }
+            is EmptyStateViewHolder -> {
+                holder.bind()
+            }
+        }
     }
 
     fun updateConfig(newConfig: FusionCardConfiguration) {
         this.config = newConfig
-        if (itemCount > 0) {
-            notifyItemRangeChanged(0, itemCount)
+        notifyDataSetChanged()
+    }
+
+    class EmptyStateViewHolder(
+        itemView: View,
+        private val config: FusionCardConfiguration
+    ) : RecyclerView.ViewHolder(itemView) {
+        private val emptyStateMessage: TextView = itemView.findViewById(R.id.empty_state_message)
+
+        fun bind() {
+            emptyStateMessage.text = config.emptyStateMessage
+            emptyStateMessage.setTextColor(config.emptyStateMessageColor)
+            emptyStateMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, config.emptyStateMessageFontSizeSp)
         }
     }
 
@@ -56,7 +102,7 @@ class FusionSurveyAdapter(
 
         fun bind(survey: Survey) {
             tvCpiAmount.text = survey.score.toInt().toString()
-            
+
             tvCpiCurrency.text = itemView.context.getString(R.string.fusion_sdk_cpi_currency_default)
             tvCpiCurrency.visibility = View.VISIBLE
 
@@ -124,4 +170,3 @@ class FusionSurveyAdapter(
         }
     }
 }
-
