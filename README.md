@@ -112,51 +112,34 @@ To display the survey cards, call `FusionSdk.showSurveyCards()` from your Activi
 In your Activity or Fragment:
 
 ```kotlin
-override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_main) // Ensure this layout contains your cardContainer
+val customCardConfig = FusionCardConfiguration.Builder()
+    .accentColor(Color.parseColor("#00AEEF")) // Sets CPI amount & LOI icon color
+    .textColor(Color.BLACK) // Sets LOI text color
+    .starColor(Color.parseColor("#FFC107")) // Gold stars
+    .inactiveStarColor(Color.parseColor("#E0E0E0")) // Light gray for inactive stars
+    .cardBackgroundColor(Color.WHITE)
+    .cardCornerRadiusDp(12f)
+    .cardElevationDp(4f)
+    .cpiAmountFontSizeSp(34f)
+    .cpiCurrencyColor(Color.parseColor("#00AEEF")) // For "Coins" text
+    .cpiCurrencyFontSizeSp(16f)
+    .loiFontSizeSp(18f)
+    .showRatingStars(true)
+    .loiIconVisibility(true)
+    .webViewToolbarColor(Color.parseColor("#007AFF"))
+    .webViewToolbarTitleColor(Color.WHITE)
+    .webViewToolbarTitle("Complete Survey")
+    .build()
 
-    cardContainer = findViewById(R.id.cardContainer)
-
-    // Surveys will load and display automatically here
-    loadSurveys()
-}
-
-private fun loadSurveys() {
-    val customCardConfig = FusionCardConfiguration.Builder()
-        .accentColor(Color.parseColor("#00AEEF")) // Sets CPI amount & LOI icon color
-        .textColor(Color.BLACK) // Sets LOI text color
-        .starColor(Color.parseColor("#FFC107")) // Gold stars
-        .inactiveStarColor(Color.parseColor("#E0E0E0")) // Light gray for inactive stars
-        .cardBackgroundColor(Color.WHITE)
-        .cardCornerRadiusDp(12f)
-        .cardElevationDp(4f)
-        .cpiAmountFontSizeSp(34f)
-        .cpiCurrencyColor(Color.parseColor("#00AEEF")) // For "Coins" text
-        .cpiCurrencyFontSizeSp(16f)
-        .loiFontSizeSp(18f)
-        .showRatingStars(true)
-        .loiIconVisibility(true)
-        .webViewToolbarColor(Color.parseColor("#007AFF"))
-        .webViewToolbarTitleColor(Color.WHITE)
-        .webViewToolbarTitle("Complete Survey")
-        .build()
-
-    FusionSdk.showSurveyCards(
-        context = this,
-        targetView = cardContainer,
-        config = customCardConfig,
-        accessToken = "your_token", // Example token
-        respondentId = "your_id", // Example id
-        locale = "en_US" // Example locale
-        // Optional: memberId, hashedId, profileData can also be passed
-    )
-}
-
-override fun onDestroy() {
-    super.onDestroy()
-    FusionSdk.shutdown() // Recommended to clear SDK resources
-}
+FusionSdk.showSurveyCards(
+    context = this,
+    targetView = cardContainer,
+    config = customCardConfig,
+    accessToken = "your_token", // Example token
+    respondentId = "your_id", // Example id
+    locale = "en_US" // Example locale
+    // Optional: memberId, hashedId, profileData can also be passed
+)
 ```
 
 Make sure your `activity_main.xml` (or relevant layout file) includes a `ViewGroup` (like `LinearLayout` or `FrameLayout`) with the ID `R.id.cardContainer`. This container should be able to accommodate a horizontally scrolling `RecyclerView`.
