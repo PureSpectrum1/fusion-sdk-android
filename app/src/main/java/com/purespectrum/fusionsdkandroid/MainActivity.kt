@@ -44,15 +44,14 @@ class MainActivity : AppCompatActivity() {
             context = this,
             targetView = cardContainer,
             config = customCardConfig,
-            accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbXAiOjE3MSwiaWF0IjoxNjc3MTg0NTc5fQ.lw29VbgcAKA8WPmh1fWfcyTjmeHeOgUT8erIm3KkcdQ", // Example token
-            respondentId = "vini", // Example id
-            locale = "en_US" // Example locale
+            accessToken = "token", // Example token
+            respondentId = "id", // Example id
+            locale = "locale" // Example locale
         )
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        // FusionSdk.hideSurveyCards(cardContainer) // Not strictly needed if activity is destroyed
         FusionSdk.shutdown()
     }
 }

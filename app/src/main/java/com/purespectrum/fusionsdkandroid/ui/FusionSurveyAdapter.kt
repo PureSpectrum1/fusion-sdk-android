@@ -1,9 +1,9 @@
 package com.purespectrum.fusionsdkandroid.ui
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -20,71 +20,18 @@ import com.purespectrum.fusionsdkandroid.model.Survey
 
 class FusionSurveyAdapter(
     private val context: Context,
-    private var config: FusionCardConfiguration,
+    private val config: FusionCardConfiguration,
     private val onItemClick: (Survey) -> Unit
-) : ListAdapter<Survey, RecyclerView.ViewHolder>(SurveyDiffCallback()) {
+) : ListAdapter<Survey, FusionSurveyAdapter.SurveyViewHolder>(SurveyDiffCallback()) {
 
-    companion object {
-        private const val VIEW_TYPE_EMPTY = 0
-        private const val VIEW_TYPE_SURVEY = 1
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SurveyViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_survey_card, parent, false)
+        return SurveyViewHolder(view, config, onItemClick)
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return if (currentList.isEmpty() && config.showEmptyState) {
-            VIEW_TYPE_EMPTY
-        } else {
-            VIEW_TYPE_SURVEY
-        }
-    }
-
-    override fun getItemCount(): Int {
-        return if (currentList.isEmpty() && config.showEmptyState) 1 else currentList.size
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
-            VIEW_TYPE_EMPTY -> {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.empty_state_view, parent, false)
-                EmptyStateViewHolder(view, config)
-            }
-            else -> {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_survey_card, parent, false)
-                SurveyViewHolder(view, config, onItemClick)
-            }
-        }
-    }
-
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (holder) {
-            is SurveyViewHolder -> {
-                if (currentList.isNotEmpty()) {
-                    holder.bind(getItem(position))
-                }
-            }
-            is EmptyStateViewHolder -> {
-                holder.bind()
-            }
-        }
-    }
-
-    fun updateConfig(newConfig: FusionCardConfiguration) {
-        this.config = newConfig
-        notifyDataSetChanged()
-    }
-
-    class EmptyStateViewHolder(
-        itemView: View,
-        private val config: FusionCardConfiguration
-    ) : RecyclerView.ViewHolder(itemView) {
-        private val emptyStateMessage: TextView = itemView.findViewById(R.id.empty_state_message)
-
-        fun bind() {
-            emptyStateMessage.text = config.emptyStateMessage
-            emptyStateMessage.setTextColor(config.emptyStateMessageColor)
-            emptyStateMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, config.emptyStateMessageFontSizeSp)
-        }
+    override fun onBindViewHolder(holder: SurveyViewHolder, position: Int) {
+        holder.bind(getItem(position))
     }
 
     class SurveyViewHolder(
@@ -138,7 +85,7 @@ class FusionSurveyAdapter(
                 try {
                     ivLoiIcon.colorFilter = PorterDuffColorFilter(config.loiIconColor, PorterDuff.Mode.SRC_IN)
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    Log.e("FusionSurveyAdapter", "Error applying color filter to LOI icon", e)
                 }
             } else {
                 ivLoiIcon.visibility = View.GONE
