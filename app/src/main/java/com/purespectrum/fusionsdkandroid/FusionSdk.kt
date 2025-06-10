@@ -19,7 +19,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.IOException
 import retrofit2.HttpException
+import com.purespectrum.fusionsdkandroid.mapExceptionToFusionError
 
 @SuppressLint("StaticFieldLeak")
 object FusionSdk {
@@ -34,6 +36,7 @@ object FusionSdk {
         targetView: ViewGroup,
         config: FusionCardConfiguration,
         baseUrl: String = "https://fusionapi.spectrumsurveys.com/",
+        currencyUrl: String = "https://routerapi.spectrumsurveys.com/",
         accessToken: String,
         respondentId: String,
         locale: String,
@@ -43,6 +46,7 @@ object FusionSdk {
         onError: ((FusionError) -> Unit)? = null
     ) {
         val apiService = ApiClient.create(baseUrl)
+        val currencyService = ApiClient.create(currencyUrl)
 
         if (recyclerView == null || recyclerView?.parent != targetView) {
             targetView.findViewWithTag<View>(EMPTY_STATE_VIEW_TAG)?.let { targetView.removeView(it) }
@@ -75,26 +79,66 @@ object FusionSdk {
         }
         emptyStateTextView?.visibility = View.GONE
 
-        if (surveyAdapter == null || recyclerView?.adapter == null) {
-            surveyAdapter = FusionSurveyAdapter(context, config) { survey ->
-                val intent = Intent(context, SurveyWebViewActivity::class.java).apply {
-                    putExtra(SurveyWebViewActivity.EXTRA_URL, survey.entryLink)
-                    putExtra(SurveyWebViewActivity.EXTRA_TOOLBAR_COLOR, config.webViewToolbarColor)
-                    putExtra(SurveyWebViewActivity.EXTRA_TOOLBAR_TITLE_COLOR, config.webViewToolbarTitleColor)
-                    config.webViewToolbarTitle?.let { putExtra(SurveyWebViewActivity.EXTRA_TOOLBAR_TITLE, it) }
-                }
-                if (context !is android.app.Activity) {
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }
-                context.startActivity(intent)
-                Log.d(TAG, "Survey card clicked: ${survey.surveyId}, opening WebView.")
-            }
-            recyclerView?.adapter = surveyAdapter
-            Log.d(TAG, "Survey adapter created and set.")
-        } else {
-            Log.d(TAG, "Using existing survey adapter.")
-        }
+        CoroutineScope(Dispatchers.IO).launch {
+            var currencyName = context.getString(R.string.fusion_sdk_cpi_currency_default)
 
+            try {
+                Log.d(TAG, "Fetching currency information...")
+                val currencyResponse = currencyService.getCurrencyInfo(token = accessToken)
+
+                if (currencyResponse.isSuccessful && currencyResponse.body() != null) {
+                    currencyName = currencyResponse.body()!!.currencyName
+                    Log.d(TAG, "Successfully fetched currency name: $currencyName")
+                } else {
+                    Log.w(TAG, "Failed to fetch currency name, using default: $currencyName")
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error fetching currency name: ${e.message}", e)
+            }
+
+            withContext(Dispatchers.Main) {
+                if (surveyAdapter == null || recyclerView?.adapter == null) {
+                    surveyAdapter = FusionSurveyAdapter(
+                        context = context,
+                        config = config,
+                        currencyName = currencyName,
+                        onItemClick = { survey ->
+                            val intent = Intent(context, SurveyWebViewActivity::class.java).apply {
+                                putExtra(SurveyWebViewActivity.EXTRA_URL, survey.entryLink)
+                                putExtra(SurveyWebViewActivity.EXTRA_TOOLBAR_COLOR, config.webViewToolbarColor)
+                                putExtra(SurveyWebViewActivity.EXTRA_TOOLBAR_TITLE_COLOR, config.webViewToolbarTitleColor)
+                                config.webViewToolbarTitle?.let { putExtra(SurveyWebViewActivity.EXTRA_TOOLBAR_TITLE, it) }
+                            }
+                            if (context !is android.app.Activity) {
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            }
+                            context.startActivity(intent)
+                            Log.d(TAG, "Survey card clicked: ${survey.surveyId}, opening WebView.")
+                        }
+                    )
+                    recyclerView?.adapter = surveyAdapter
+                    Log.d(TAG, "Survey adapter created and set with currency: $currencyName")
+                } else {
+                    surveyAdapter?.updateCurrencyName(currencyName)
+                    Log.d(TAG, "Updated existing adapter with currency: $currencyName")
+                }
+
+                fetchSurveys(apiService, accessToken, respondentId, locale, memberId, hashedId, profileData, config, onError)
+            }
+        }
+    }
+
+    private fun fetchSurveys(
+        apiService: com.purespectrum.fusionsdkandroid.api.ApiService,
+        accessToken: String,
+        respondentId: String,
+        locale: String,
+        memberId: String?,
+        hashedId: String?,
+        profileData: Map<String, String>,
+        config: FusionCardConfiguration,
+        onError: ((FusionError) -> Unit)?
+    ) {
         recyclerView?.visibility = View.GONE
         emptyStateTextView?.visibility = View.GONE
 

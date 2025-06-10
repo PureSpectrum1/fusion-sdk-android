@@ -21,22 +21,31 @@ import com.purespectrum.fusionsdkandroid.model.Survey
 class FusionSurveyAdapter(
     private val context: Context,
     private val config: FusionCardConfiguration,
+    private var currencyName: String,
     private val onItemClick: (Survey) -> Unit
 ) : ListAdapter<Survey, FusionSurveyAdapter.SurveyViewHolder>(SurveyDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SurveyViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_survey_card, parent, false)
-        return SurveyViewHolder(view, config, onItemClick)
+        return SurveyViewHolder(view, config, currencyName, onItemClick)
     }
 
     override fun onBindViewHolder(holder: SurveyViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
+    fun updateCurrencyName(newCurrencyName: String) {
+        if (this.currencyName != newCurrencyName) {
+            this.currencyName = newCurrencyName
+            notifyDataSetChanged()
+        }
+    }
+
     class SurveyViewHolder(
         itemView: View,
         private val config: FusionCardConfiguration,
+        private val currencyName: String,
         private val onItemClick: (Survey) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
 
@@ -50,7 +59,7 @@ class FusionSurveyAdapter(
         fun bind(survey: Survey) {
             tvCpiAmount.text = survey.score.toInt().toString()
 
-            tvCpiCurrency.text = itemView.context.getString(R.string.fusion_sdk_cpi_currency_default)
+            tvCpiCurrency.text = currencyName
             tvCpiCurrency.visibility = View.VISIBLE
 
             tvLoi.text = itemView.context.getString(R.string.fusion_sdk_loi_minutes_format, survey.estimatedLoi)
