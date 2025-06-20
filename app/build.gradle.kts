@@ -7,6 +7,9 @@ plugins {
 android {
     namespace = "com.purespectrum.fusionsdkandroid"
     compileSdk = 35
+    defaultConfig {
+        minSdk = 21
+    }
 
     buildTypes {
         release {
@@ -19,12 +22,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 }
 
@@ -50,15 +53,16 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }
 
-val publishing = extensions.getByType<PublishingExtension>()
-publishing.publications {
-    register<MavenPublication>("release") {
-        groupId = "com.github.PureSpectrum1"
-        artifactId = "fusion-sdk-android"
-        version = "1.0.0"
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                from(components["release"])
 
-        afterEvaluate {
-            from(components["release"])
+                groupId = "com.github.PureSpectrum1"
+                artifactId = "fusion-sdk-android"
+                version = "1.0.0"
+            }
         }
     }
 }
