@@ -64,18 +64,16 @@ Add the Fusion SDK dependency to your app module's `build.gradle` or `build.grad
 **For Gradle (Groovy DSL):**
 ```groovy
 dependencies {
-    implementation 'com.github.PureSpectrum:fusion-sdk-android:1.0.2'
+    implementation 'com.github.PureSpectrum1:fusion-sdk-android:1.0.2'
 }
 ```
 
 **For Gradle (Kotlin DSL):**
 ```kotlin
 dependencies {
-    implementation("com.github.PureSpectrum:fusion-sdk-android:1.0.0")
+    implementation("com.github.PureSpectrum1:fusion-sdk-android:1.0.2")
 }
 ```
-
-Replace `1.0.0` with the latest version or commit hash.
 
 ### Step 3: Ensure required dependencies
 
