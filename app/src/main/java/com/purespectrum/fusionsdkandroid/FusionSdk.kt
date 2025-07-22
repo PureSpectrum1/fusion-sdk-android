@@ -36,7 +36,6 @@ object FusionSdk {
         targetView: ViewGroup,
         config: FusionCardConfiguration,
         baseUrl: String = "https://fusionapi.spectrumsurveys.com/",
-        currencyUrl: String = "https://routerapi.spectrumsurveys.com/",
         accessToken: String,
         respondentId: String,
         locale: String,
@@ -46,7 +45,7 @@ object FusionSdk {
         onError: ((FusionError) -> Unit)? = null
     ) {
         val apiService = ApiClient.create(baseUrl)
-        val currencyService = ApiClient.create(currencyUrl)
+        val currencyService = ApiClient.create(baseUrl)
 
         if (recyclerView == null || recyclerView?.parent != targetView) {
             targetView.findViewWithTag<View>(EMPTY_STATE_VIEW_TAG)?.let { targetView.removeView(it) }
@@ -87,7 +86,7 @@ object FusionSdk {
                 val currencyResponse = currencyService.getCurrencyInfo(token = accessToken)
 
                 if (currencyResponse.isSuccessful && currencyResponse.body() != null) {
-                    currencyName = currencyResponse.body()!!.currencyName
+                    currencyName = currencyResponse.body()?.currencyName ?: "Points"
                     Log.d(TAG, "Successfully fetched currency name: $currencyName")
                 } else {
                     Log.w(TAG, "Failed to fetch currency name, using default: $currencyName")
@@ -153,6 +152,7 @@ object FusionSdk {
                     starCount = true,
                     memberId = memberId,
                     hashedId = hashedId,
+                    isSdk = true,
                     profileData = profileData
                 )
 
