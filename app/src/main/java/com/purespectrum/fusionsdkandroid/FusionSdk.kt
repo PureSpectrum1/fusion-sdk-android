@@ -22,6 +22,7 @@ import kotlinx.coroutines.withContext
 import java.io.IOException
 import retrofit2.HttpException
 import com.purespectrum.fusionsdkandroid.mapExceptionToFusionError
+import com.purespectrum.fusionsdkandroid.model.Survey
 
 @SuppressLint("StaticFieldLeak")
 object FusionSdk {
@@ -35,14 +36,15 @@ object FusionSdk {
         context: Context,
         targetView: ViewGroup,
         config: FusionCardConfiguration,
-        baseUrl: String = "https://fusionapi.spectrumsurveys.com/",
         accessToken: String,
         respondentId: String,
         locale: String,
+        profileData: Map<String, String> = emptyMap(),
         memberId: String? = null,
         hashedId: String? = null,
-        profileData: Map<String, String> = emptyMap(),
-        onError: ((FusionError) -> Unit)? = null
+        onError: ((FusionError) -> Unit)? = null,
+        onResult: ((FusionResult) -> Unit)? = null,
+        baseUrl: String = "https://fusionapi.spectrumsurveys.com/"
     ) {
         val apiService = ApiClient.create(baseUrl)
         val currencyService = ApiClient.create(baseUrl)
@@ -122,7 +124,7 @@ object FusionSdk {
                     Log.d(TAG, "Updated existing adapter with currency: $currencyName")
                 }
 
-                fetchSurveys(apiService, accessToken, respondentId, locale, memberId, hashedId, profileData, config, onError)
+                fetchSurveys(apiService, accessToken, respondentId, locale, memberId, hashedId, profileData, config, onError, onResult)
             }
         }
     }
@@ -136,7 +138,8 @@ object FusionSdk {
         hashedId: String?,
         profileData: Map<String, String>,
         config: FusionCardConfiguration,
-        onError: ((FusionError) -> Unit)?
+        onError: ((FusionError) -> Unit)?,
+        onResult: ((FusionResult) -> Unit)? = null
     ) {
         recyclerView?.visibility = View.GONE
         emptyStateTextView?.visibility = View.GONE
@@ -162,8 +165,9 @@ object FusionSdk {
                     withContext(Dispatchers.Main) {
                         surveyAdapter?.submitList(surveys)
                         if (surveys.isEmpty()) {
-                            handleEmptyOrErrorState(config, FusionError.NoSurveysAvailable(), onError)
+                            onResult?.invoke(FusionResult.NoSurveysAvailable("No surveys available"))
                         } else {
+                            onResult?.invoke(FusionResult.Success(surveys, surveys.size))
                             recyclerView?.visibility = View.VISIBLE
                             emptyStateTextView?.visibility = View.GONE
                         }

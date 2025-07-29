@@ -64,14 +64,14 @@ Add the Fusion SDK dependency to your app module's `build.gradle` or `build.grad
 **For Gradle (Groovy DSL):**
 ```groovy
 dependencies {
-    implementation 'com.github.PureSpectrum1:fusion-sdk-android:1.0.3'
+    implementation 'com.github.PureSpectrum1:fusion-sdk-android:1.0.4'
 }
 ```
 
 **For Gradle (Kotlin DSL):**
 ```kotlin
 dependencies {
-    implementation("com.github.PureSpectrum1:fusion-sdk-android:1.0.3")
+    implementation("com.github.PureSpectrum1:fusion-sdk-android:1.0.4")
 }
 ```
 
@@ -244,6 +244,16 @@ FusionSdk.showSurveyCards(
                 // Show a generic error message
                 Toast.makeText(this, "An unexpected error occurred", Toast.LENGTH_SHORT).show()
             }
+        }
+    },
+    onSuccess = { surveyCount ->
+        // Handle successful loading of surveys
+        Log.i("FusionSDK", "Successfully loaded $surveyCount surveys.")
+        if (surveyCount > 0) {
+            Toast.makeText(this, "Surveys loaded successfully!", Toast.LENGTH_SHORT).show()
+        } else {
+            // This case might be reached if no surveys are returned
+            Log.i("FusionSDK", "No surveys available, but call was successful.")
         }
     }
 )
