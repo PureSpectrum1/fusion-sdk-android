@@ -43,9 +43,9 @@ object FusionSdk {
         memberId: String? = null,
         hashedId: String? = null,
         onError: ((FusionError) -> Unit)? = null,
-        onResult: ((FusionResult) -> Unit)? = null,
-        baseUrl: String = "https://fusionapi.spectrumsurveys.com/"
+        onResult: ((FusionResult) -> Unit)? = null
     ) {
+        val baseUrl = "https://fusionapi.spectrumsurveys.com/"
         val apiService = ApiClient.create(baseUrl)
         val currencyService = ApiClient.create(baseUrl)
 
