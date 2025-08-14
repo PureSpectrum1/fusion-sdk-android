@@ -9,7 +9,7 @@ import retrofit2.http.Query
 import retrofit2.http.QueryMap
 
 interface ApiService {
-    @GET("surveys/match")
+    @GET("surveys/fusionMatch")
     suspend fun getData(
         @Header("access-token") token: String,
         @Query("respondentId") respondentId: String,
@@ -22,7 +22,7 @@ interface ApiService {
         @QueryMap(encoded = true) profileData: Map<String, String> = emptyMap()
     ): retrofit2.Response<ApiResponse>
 
-    @GET("sdkCurrency")
+    @GET("sdkSettings")
     suspend fun getCurrencyInfo(
         @Header("access-token") token: String
     ): retrofit2.Response<CurrencyResponse>
