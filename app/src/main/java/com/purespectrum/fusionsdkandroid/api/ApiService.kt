@@ -20,7 +20,7 @@ interface ApiService {
         @Query("hashed_id") hashedId: String?,
         @Query("isSdk") isSdk: Boolean,
         @QueryMap(encoded = true) profileData: Map<String, String> = emptyMap()
-    ): retrofit2.Response<ApiResponse<List<Survey>>>
+    ): retrofit2.Response<ApiResponse>
 
     @GET("sdkCurrency")
     suspend fun getCurrencyInfo(
