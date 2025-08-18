@@ -22,7 +22,6 @@ import kotlinx.coroutines.withContext
 import java.io.IOException
 import retrofit2.HttpException
 import com.purespectrum.fusionsdkandroid.mapExceptionToFusionError
-import com.purespectrum.fusionsdkandroid.model.Survey
 
 @SuppressLint("StaticFieldLeak")
 object FusionSdk {
@@ -86,13 +85,8 @@ object FusionSdk {
             try {
                 Log.d(TAG, "Fetching currency information...")
                 val currencyResponse = currencyService.getCurrencyInfo(token = accessToken)
-
-                if (currencyResponse.isSuccessful && currencyResponse.body() != null) {
-                    currencyName = currencyResponse.body()?.currencyName ?: "Points"
-                    Log.d(TAG, "Successfully fetched currency name: $currencyName")
-                } else {
-                    Log.w(TAG, "Failed to fetch currency name, using default: $currencyName")
-                }
+                currencyName = currencyResponse.currencyName ?: "Points"
+                Log.d(TAG, "Successfully fetched currency name: $currencyName")
             } catch (e: Exception) {
                 Log.e(TAG, "Error fetching currency name: ${e.message}", e)
             }
@@ -159,26 +153,16 @@ object FusionSdk {
                     profileData = profileData
                 )
 
-                if (response.isSuccessful) {
-                    val surveys = response.body()?.surveys ?: emptyList()
-                    Log.d(TAG, "Successfully fetched ${surveys.size} surveys.")
-                    withContext(Dispatchers.Main) {
-                        surveyAdapter?.submitList(surveys)
-                        if (surveys.isEmpty()) {
-                            onResult?.invoke(FusionResult.NoSurveysAvailable("No surveys available"))
-                        } else {
-                            onResult?.invoke(FusionResult.Success(surveys, surveys.size))
-                            recyclerView?.visibility = View.VISIBLE
-                            emptyStateTextView?.visibility = View.GONE
-                        }
-                    }
-                } else {
-                    val httpException = HttpException(response)
-                    Log.e(TAG, "API call failed with code: ${response.code()}")
-                    val fusionError = mapExceptionToFusionError(httpException)
-                    withContext(Dispatchers.Main) {
-                        surveyAdapter?.submitList(emptyList())
-                        handleEmptyOrErrorState(config, fusionError, onError)
+                val surveys = response.surveys ?: emptyList()
+                Log.d(TAG, "Successfully fetched ${surveys.size} surveys.")
+                withContext(Dispatchers.Main) {
+                    surveyAdapter?.submitList(surveys)
+                    if (surveys.isEmpty()) {
+                        onResult?.invoke(FusionResult.NoSurveysAvailable("No surveys available"))
+                    } else {
+                        onResult?.invoke(FusionResult.Success(surveys, surveys.size))
+                        recyclerView?.visibility = View.VISIBLE
+                        emptyStateTextView?.visibility = View.GONE
                     }
                 }
             } catch (e: Exception) {
