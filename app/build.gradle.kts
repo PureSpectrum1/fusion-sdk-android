@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     id("kotlin-android")
     id("maven-publish")
+    id("kotlin-kapt")
 }
 
 android {
@@ -29,6 +30,11 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    kotlin {
+        compilerOptions {
+            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_8)
+        }
+    }
 }
 
 dependencies {
@@ -40,6 +46,9 @@ dependencies {
     // Network dependencies
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
+    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     // Lifecycle and coroutines
@@ -61,7 +70,7 @@ afterEvaluate {
 
                 groupId = "com.github.PureSpectrum1"
                 artifactId = "fusion-sdk-android"
-                version = "1.0.10"
+                version = "1.0.11"
             }
         }
     }
