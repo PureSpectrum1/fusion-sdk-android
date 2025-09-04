@@ -82,6 +82,7 @@ object FusionSdk {
 
         CoroutineScope(Dispatchers.IO).launch {
             var currencyName = context.getString(R.string.fusion_sdk_cpi_currency_default)
+            var conversionValue = 100
 
             try {
                 Log.d(TAG, "Fetching currency information...")
@@ -89,6 +90,7 @@ object FusionSdk {
 
                 if (currencyResponse.isSuccessful && currencyResponse.body() != null) {
                     currencyName = currencyResponse.body()?.currencyName ?: "Points"
+                    conversionValue = currencyResponse.body()?.conversionValue ?: 100
                     Log.d(TAG, "Successfully fetched currency name: $currencyName")
                 } else {
                     Log.w(TAG, "Failed to fetch currency name, using default: $currencyName")
@@ -103,6 +105,7 @@ object FusionSdk {
                         context = context,
                         config = config,
                         currencyName = currencyName,
+                        conversionValue = conversionValue,
                         onItemClick = { survey ->
                             val intent = Intent(context, SurveyWebViewActivity::class.java).apply {
                                 putExtra(SurveyWebViewActivity.EXTRA_URL, survey.entryLink)

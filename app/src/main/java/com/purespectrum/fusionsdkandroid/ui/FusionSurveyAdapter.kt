@@ -17,11 +17,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.purespectrum.fusionsdkandroid.R
 import com.purespectrum.fusionsdkandroid.model.Survey
+import java.math.RoundingMode
 
 class FusionSurveyAdapter(
     private val context: Context,
     private val config: FusionCardConfiguration,
     private var currencyName: String,
+    private var conversionValue: Int,
     private val onItemClick: (Survey) -> Unit
 ) : ListAdapter<Survey, FusionSurveyAdapter.SurveyViewHolder>(SurveyDiffCallback()) {
 
@@ -46,6 +48,7 @@ class FusionSurveyAdapter(
         itemView: View,
         private val config: FusionCardConfiguration,
         private val currencyName: String,
+        private var conversionValue: Int,
         private val onItemClick: (Survey) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
 
@@ -57,7 +60,11 @@ class FusionSurveyAdapter(
         private val ratingBar: RatingBar? = itemView.findViewById(R.id.survey_rating_bar)
 
         fun bind(survey: Survey) {
-            tvCpiAmount.text = survey.score.toInt().toString()
+            val decimal = 2
+            val convertedValue = conversionValue * survey.score.toInt()
+            val fixedValue = convertedValue.toBigDecimal().setScale(decimal, RoundingMode.HALF_UP).toDouble()
+
+            tvCpiAmount.text = fixedValue.toString()
 
             tvCpiCurrency.text = currencyName
             tvCpiCurrency.visibility = View.VISIBLE
