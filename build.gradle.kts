@@ -17,4 +17,4 @@ plugins {
 }
 
 group = "com.github.PureSpectrum1"
-version = "1.0.13"
+version = "1.0.14"

@@ -30,7 +30,7 @@ class FusionSurveyAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SurveyViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_survey_card, parent, false)
-        return SurveyViewHolder(view, config, currencyName, onItemClick)
+        return SurveyViewHolder(view, config, currencyName, conversionValue, onItemClick)
     }
 
     override fun onBindViewHolder(holder: SurveyViewHolder, position: Int) {

@@ -1,5 +1,8 @@
 package com.purespectrum.fusionsdkandroid.model
 
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
 data class Survey(
     val surveyId: String,
     val cpi: Double,
