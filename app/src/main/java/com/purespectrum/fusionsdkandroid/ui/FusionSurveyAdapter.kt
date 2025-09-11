@@ -61,7 +61,7 @@ class FusionSurveyAdapter(
 
         fun bind(survey: Survey) {
             val decimal = 2
-            val convertedValue = conversionValue * survey.score.toInt()
+            val convertedValue = conversionValue * survey.score
             val fixedValue = convertedValue.toBigDecimal().setScale(decimal, RoundingMode.HALF_UP).toDouble()
 
             tvCpiAmount.text = fixedValue.toString()
