@@ -23,6 +23,9 @@ import java.io.IOException
 import retrofit2.HttpException
 import com.purespectrum.fusionsdkandroid.mapExceptionToFusionError
 import com.purespectrum.fusionsdkandroid.model.Survey
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 
 @SuppressLint("StaticFieldLeak")
 object FusionSdk {
@@ -60,7 +63,23 @@ object FusionSdk {
                 )
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 visibility = View.GONE
+                clipToPadding = false
             }
+
+            ViewCompat.setOnApplyWindowInsetsListener(recyclerView!!) { view, windowInsets ->
+                val systemInsets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+                val imeInsets = windowInsets.getInsets(WindowInsetsCompat.Type.ime())
+
+                val topPadding = systemInsets.top
+                val bottomPadding = systemInsets.bottom + imeInsets.bottom
+
+                view.updatePadding(
+                    top = topPadding,
+                    bottom = bottomPadding
+                )
+                windowInsets
+            }
+
             targetView.addView(recyclerView)
             Log.d(TAG, "RecyclerView initialized and added to target view.")
         }
