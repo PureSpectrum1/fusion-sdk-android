@@ -60,11 +60,12 @@ class FusionSurveyAdapter(
         private val ratingBar: RatingBar? = itemView.findViewById(R.id.survey_rating_bar)
 
         fun bind(survey: Survey) {
-            val decimal = 2
             val convertedValue = conversionValue * survey.cpi
-            val fixedValue = convertedValue.toBigDecimal().setScale(decimal, RoundingMode.HALF_UP).toDouble()
+            val decimalValue = if (convertedValue < 10) 2 else 0
+            val fixedValue = convertedValue.toBigDecimal().setScale(decimalValue, RoundingMode.HALF_UP).toDouble()
+            val displayedValue = if (fixedValue % 1.0 == 0.0) fixedValue.toInt().toString() else fixedValue.toString()
 
-            tvCpiAmount.text = fixedValue.toString()
+            tvCpiAmount.text = displayedValue
 
             tvCpiCurrency.text = currencyName
             tvCpiCurrency.visibility = View.VISIBLE
