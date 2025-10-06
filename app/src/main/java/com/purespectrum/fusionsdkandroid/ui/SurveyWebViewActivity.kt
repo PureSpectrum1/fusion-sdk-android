@@ -16,6 +16,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.purespectrum.fusionsdkandroid.R
+import androidx.core.view.WindowCompat
 
 class SurveyWebViewActivity : AppCompatActivity() {
 
@@ -45,6 +46,7 @@ class SurveyWebViewActivity : AppCompatActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
 
         surveyUrl = intent.getStringExtra(EXTRA_URL)
@@ -53,7 +55,14 @@ class SurveyWebViewActivity : AppCompatActivity() {
             return
         }
 
-        val rootLayout = FrameLayout(this)
+        val rootLayout = FrameLayout(this).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+        }
+
+        EdgeToEdgeHelper.setup(this, rootLayout)
         setContentView(rootLayout)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
