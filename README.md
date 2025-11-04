@@ -107,6 +107,8 @@ The Fusion SDK simplifies displaying survey opportunities in your application. I
 
 To display the survey cards, call `FusionSdk.showSurveyCards()` from your Activity or Fragment, typically in a lifecycle method like `onCreate` or `onViewCreated`. The SDK will then handle fetching the data and populating the view.
 
+To display the survey cards vertically, simply pass in the `verticalAllowed` variable set to true and it will show your cards in that order and allowing for vertical scrolling.
+
 In your Activity or Fragment:
 
 ```kotlin
@@ -136,7 +138,7 @@ FusionSdk.showSurveyCards(
     accessToken = "your_token", // Example token
     respondentId = "your_id", // Example id
     locale = "en_US" // Example locale
-    // Optional: memberId, hashedId, profileData can also be passed
+    // Optional: memberId, hashedId, profileData, verticalAllowed can also be passed
 )
 ```
 
