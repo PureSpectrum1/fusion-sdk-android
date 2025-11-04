@@ -43,6 +43,7 @@ object FusionSdk {
         respondentId: String,
         locale: String,
         profileData: Map<String, String> = emptyMap(),
+        verticalAllowed: Boolean = false,
         memberId: String? = null,
         hashedId: String? = null,
         onError: ((FusionError) -> Unit)? = null,
@@ -56,12 +57,23 @@ object FusionSdk {
             targetView.findViewWithTag<View>(EMPTY_STATE_VIEW_TAG)?.let { targetView.removeView(it) }
             recyclerView?.let { targetView.removeView(it) }
 
+            val scrollingOrientation = if (!verticalAllowed) {
+                LinearLayoutManager.HORIZONTAL
+            } else {
+                LinearLayoutManager.VERTICAL
+            }
+
+            val heightParam = if (!verticalAllowed) {
+                ViewGroup.LayoutParams.WRAP_CONTENT // Using WRAP_CONTENT for horizontal scrolling
+            } else {
+                ViewGroup.LayoutParams.MATCH_PARENT // Using MATCH_PARENT for vertical scrolling
+            }
             recyclerView = RecyclerView(context).apply {
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
+                    heightParam
                 )
-                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = LinearLayoutManager(context, scrollingOrientation, false)
                 visibility = View.GONE
                 clipToPadding = false
             }
