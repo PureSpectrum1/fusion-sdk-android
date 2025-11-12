@@ -70,7 +70,7 @@ afterEvaluate {
 
                 groupId = "com.github.PureSpectrum1"
                 artifactId = "fusion-sdk-android"
-                version = "1.0.20"
+                version = "1.0.21"
             }
         }
     }
