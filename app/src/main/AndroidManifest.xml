@@ -11,8 +11,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Fusionsdkandroid"
         tools:targetApi="31">
-        <activity android:name=".WebViewActivity" />
-        <activity android:name=".ui.SurveyWebViewActivity" />
+        <activity
+            android:name=".WebViewActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".ui.SurveyWebViewActivity"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
