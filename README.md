@@ -135,12 +135,33 @@ FusionSdk.showSurveyCards(
     context = this,
     targetView = cardContainer,
     config = customCardConfig,
-    accessToken = "your_token", // Example token
-    respondentId = "your_id", // Example id
-    locale = "en_US" // Example locale
-    // Optional: memberId, hashedId, profileData, verticalAllowed can also be passed
+    accessToken = "your_token", // Input token
+    respondentId = "your_id", // Input id
+    locale = "en_US" // Input locale
+    // Optional inputs: memberId, hashedId, profileData, verticalAllowed can also be passed
 )
 ```
+### Fusion SDK `showSurveyCards` Parameters
+
+| Parameter           | Data Type | Requirement | Definition                                                                                                                                                     |
+|:--------------------|:----------|:------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **context**         | `Object`  | Mandatory   | The current class or scope instance (typically `this`).                                                                                                        |
+| **targetView**      | `Element` | Mandatory   | The UI container (e.g., `cardContainer`) where the cards are rendered.                                                                                         |
+| **config**          | `Object`  | Mandatory   | Configuration object for custom UI/behavior (e.g., `customCardConfig`).                                                                                        |
+| **accessToken**     | `String`  | Mandatory   | Security token for API authentication.                                                                                                                         |
+| **respondentId**    | `String`  | Mandatory   | Unique identifier for the survey participant.                                                                                                                  |
+| **locale**          | `String`  | Mandatory   | Language and region code (e.g., `en_US` or `pt-BR`).                                                                                                           |
+| **memberId**        | `String`  | Optional    | Identifier for a specific panel or loyalty member.                                                                                                             |
+| **hashedId**        | `String`  | Optional    | Secure, anonymized version of the user ID.                                                                                                                     |
+| **profileData**     | `Object`  | Optional    | Additional demographic data for better survey matching.                                                                                                        |
+| **verticalAllowed** | `Boolean` | Optional    | When set to true, forces survey cards to render in a vertical list. This layout enables vertical scrolling and arranges cards sequentially from top to bottom. |
+
+---
+
+### Parameter Descriptions
+
+* **Mandatory Inputs**: These are required for the `showSurveyCards` method to execute. Missing any of these will result in an initialization error.
+* **Optional Inputs**: These can be passed to provide a more personalized experience or higher-quality targeting but are not required for the SDK to load.
 
 Make sure your `activity_main.xml` (or relevant layout file) includes a `ViewGroup` (like `LinearLayout` or `FrameLayout`) with the ID `R.id.cardContainer`. This container should be able to accommodate a horizontally scrolling `RecyclerView`.
 
