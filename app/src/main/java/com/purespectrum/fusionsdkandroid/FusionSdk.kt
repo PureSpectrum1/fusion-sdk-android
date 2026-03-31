@@ -39,6 +39,7 @@ object FusionSdk {
         context: Context,
         targetView: ViewGroup,
         config: FusionCardConfiguration,
+        baseUrl: String = "https://fusionapi.spectrumsurveys.com/",
         accessToken: String,
         respondentId: String,
         locale: String,
@@ -50,7 +51,6 @@ object FusionSdk {
         onError: ((FusionError) -> Unit)? = null,
         onResult: ((FusionResult) -> Unit)? = null
     ) {
-        val baseUrl = "https://fusionapi.spectrumsurveys.com/"
         val apiService = ApiClient.create(baseUrl)
         val currencyService = ApiClient.create(baseUrl)
 
