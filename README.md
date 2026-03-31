@@ -138,7 +138,7 @@ FusionSdk.showSurveyCards(
     accessToken = "your_token", // Input token
     respondentId = "your_id", // Input id
     locale = "en_US" // Input locale
-    // Optional inputs: memberId, hashedId, profileData, verticalAllowed can also be passed
+    // Optional inputs: memberId, customVariable, hashedId, profileData, verticalAllowed can also be passed
 )
 ```
 ### Fusion SDK `showSurveyCards` Parameters
@@ -152,6 +152,7 @@ FusionSdk.showSurveyCards(
 | **respondentId**    | `String`  | Mandatory   | Unique identifier for the survey participant.                                                                                                                  |
 | **locale**          | `String`  | Mandatory   | Language and region code (e.g., `en_US` or `pt-BR`).                                                                                                           |
 | **memberId**        | `String`  | Optional    | Identifier for a specific panel or loyalty member.                                                                                                             |
+| **customVariable**  | `String`  | Optional    | Identifier for a specific panel or loyalty customVariable.                                                                                                     |
 | **hashedId**        | `String`  | Optional    | Secure, anonymized version of the user ID.                                                                                                                     |
 | **profileData**     | `Object`  | Optional    | Additional demographic data for better survey matching.                                                                                                        |
 | **verticalAllowed** | `Boolean` | Optional    | When set to true, forces survey cards to render in a vertical list. This layout enables vertical scrolling and arranges cards sequentially from top to bottom. |

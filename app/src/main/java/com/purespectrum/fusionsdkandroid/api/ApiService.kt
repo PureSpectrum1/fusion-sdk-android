@@ -17,6 +17,7 @@ interface ApiService {
         @Query("surveyScoreValue") surveyScoreValue: Boolean,
         @Query("starCount") starCount: Boolean,
         @Query("memberId") memberId: String?,
+        @Query("customVariable") customVariable: String?,
         @Query("hashed_id") hashedId: String?,
         @Query("isSdk") isSdk: Boolean,
         @QueryMap(encoded = true) profileData: Map<String, String> = emptyMap()

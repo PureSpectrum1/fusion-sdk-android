@@ -45,6 +45,7 @@ object FusionSdk {
         profileData: Map<String, String> = emptyMap(),
         verticalAllowed: Boolean = false,
         memberId: String? = null,
+        customVariable: String? = null,
         hashedId: String? = null,
         onError: ((FusionError) -> Unit)? = null,
         onResult: ((FusionResult) -> Unit)? = null
@@ -158,7 +159,7 @@ object FusionSdk {
                     Log.d(TAG, "Updated existing adapter with currency: $currencyName")
                 }
 
-                fetchSurveys(apiService, accessToken, respondentId, locale, memberId, hashedId, profileData, config, onError, onResult)
+                fetchSurveys(apiService, accessToken, respondentId, locale, memberId, customVariable, hashedId, profileData, config, onError, onResult)
             }
         }
     }
@@ -169,6 +170,7 @@ object FusionSdk {
         respondentId: String,
         locale: String,
         memberId: String?,
+        customVariable: String?,
         hashedId: String?,
         profileData: Map<String, String>,
         config: FusionCardConfiguration,
@@ -188,6 +190,7 @@ object FusionSdk {
                     surveyScoreValue = true,
                     starCount = true,
                     memberId = memberId,
+                    customVariable = customVariable,
                     hashedId = hashedId,
                     isSdk = true,
                     profileData = profileData
