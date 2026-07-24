@@ -30,26 +30,23 @@ class FusionSurveyAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SurveyViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_survey_card, parent, false)
-        return SurveyViewHolder(view, config, currencyName, conversionValue, onItemClick)
+        return SurveyViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: SurveyViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    fun updateCurrencyName(newCurrencyName: String) {
-        if (this.currencyName != newCurrencyName) {
+    fun updateCurrencyInfo(newCurrencyName: String, newConversionValue: Int) {
+        if (this.currencyName != newCurrencyName || this.conversionValue != newConversionValue) {
             this.currencyName = newCurrencyName
+            this.conversionValue = newConversionValue
             notifyDataSetChanged()
         }
     }
 
-    class SurveyViewHolder(
-        itemView: View,
-        private val config: FusionCardConfiguration,
-        private val currencyName: String,
-        private var conversionValue: Int,
-        private val onItemClick: (Survey) -> Unit
+    inner class SurveyViewHolder(
+        itemView: View
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val cardViewRoot: CardView? = itemView.findViewById(R.id.fusion_card_view_root)

@@ -155,8 +155,8 @@ object FusionSdk {
                     recyclerView?.adapter = surveyAdapter
                     Log.d(TAG, "Survey adapter created and set with currency: $currencyName")
                 } else {
-                    surveyAdapter?.updateCurrencyName(currencyName)
-                    Log.d(TAG, "Updated existing adapter with currency: $currencyName")
+                    surveyAdapter?.updateCurrencyInfo(currencyName, conversionValue)
+                    Log.d(TAG, "Updated existing adapter with currency: $currencyName, conversionValue: $conversionValue")
                 }
 
                 fetchSurveys(apiService, accessToken, respondentId, locale, memberId, customVariable, hashedId, profileData, config, onError, onResult)
